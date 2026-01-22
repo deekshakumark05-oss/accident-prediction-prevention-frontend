@@ -192,6 +192,7 @@ function predict() {
 
   fetch("https://deeksha1604.pythonanywhere.com/manual_predict", {
     method: "POST",
+    mode: "cors",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       user_id: userId,
