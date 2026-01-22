@@ -145,7 +145,7 @@
     window.location.href = "login.html";
   }
 
-  fetch(`http://deeksha1604.pythonanywhere.com/history/${userId}`)
+  fetch(`https://deeksha1604.pythonanywhere.com/history/${userId}`)
     .then(res => res.json())
     .then(data => {
       const tbody = document.getElementById("historyBody");

@@ -204,7 +204,7 @@ function finalResult(){
 
   const avg = csvData.reduce((a,b)=>a+b,0) / csvData.length;
 
-  fetch("http://deeksha1604.pythonanywhere.com/csv_result", {
+  fetch("https://deeksha1604.pythonanywhere.com/csv_result", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

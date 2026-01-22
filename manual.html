@@ -190,7 +190,7 @@ function predict() {
     return;
   }
 
-  fetch("http://deeksha1604.pythonanywhere.com/manual_predict", {
+  fetch("https://deeksha1604.pythonanywhere.com/manual_predict", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
