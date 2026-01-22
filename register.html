@@ -133,7 +133,18 @@
     <input type="email" id="email" placeholder="Enter your email" required>
 
     <label>Emergency Contact</label>
-    <input type="tel" id="emergency" placeholder="Enter emergency number" required>
+    <div style="display:flex; gap:10px; align-items:center;">
+      <input type="text" value="+91" disabled
+            style="width:70px; text-align:center; background:#f0f0f0;">
+      <input type="tel" id="emergency"
+            placeholder="10-digit mobile number"
+            maxlength="10"
+            required>
+    </div>
+
+<p id="emergencyHelp" style="color:red; font-size:13px; display:none;">
+  Emergency contact must be exactly 10 digits
+</p>
 
     <label>Password</label>
     <div style="position: relative;">
@@ -189,7 +200,6 @@
         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
       return regex.test(password);
     }
-
     async function registerUser() {
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
@@ -199,30 +209,39 @@
 
       document.getElementById("passwordHelp").style.display = "none";
       document.getElementById("confirmHelp").style.display = "none";
+      document.getElementById("emergencyHelp").style.display = "none";
 
-      if (!isStrongPassword(password)) {
-        document.getElementById("passwordHelp").style.display = "block";
-        return;
-      }
-
-      if (password !== confirmPassword) {
-        document.getElementById("confirmHelp").style.display = "block";
-        return;
-      }
-
+      // 1️⃣ Empty fields
       if (!name || !email || !emergency || !password || !confirmPassword) {
         alert("Please fill all fields");
         return;
       }
 
+      // 2️⃣ Emergency validation
+      const emergencyRegex = /^[0-9]{10}$/;
+      if (!emergencyRegex.test(emergency)) {
+        document.getElementById("emergencyHelp").style.display = "block";
+        return;
+      }
 
+      // 3️⃣ Strong password
+      if (!isStrongPassword(password)) {
+        document.getElementById("passwordHelp").style.display = "block";
+        return;
+      }
+
+      // 4️⃣ Confirm password
+      if (password !== confirmPassword) {
+        document.getElementById("confirmHelp").style.display = "block";
+        return;
+      }
       const response = await fetch(`${BASE_URL}/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: name,
           email: email,
-          emergency: emergency,
+          emergency: "+91" + emergency,
           password: password
         })
       });
