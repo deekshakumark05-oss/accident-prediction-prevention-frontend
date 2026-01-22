@@ -153,7 +153,10 @@
     window.location.href = "login.html";
   }
 
-  fetch(`https://deeksha1604.pythonanywhere.com/wallet/${userId}`)
+  fetch(`https://deeksha1604.pythonanywhere.com/wallet/${userId}`, {
+    method: "GET",
+    mode: "cors"
+  })
     .then(res => res.json())
     .then(data => {
       document.getElementById("walletAmount").innerText = data.wallet;
@@ -162,6 +165,7 @@
       console.error(err);
       alert("Unable to load wallet");
     });
+
   </script>
 
 </body>
