@@ -117,6 +117,13 @@
 
     <button class="btn" onclick="login()">Login</button>
 
+    <p style="margin-top:15px;">
+  <a href="#" onclick="showForgot()" style="color:#1f3c88; font-weight:600;">
+    Forgot User ID?
+  </a>
+</p>
+
+
     <button class="back-btn" onclick="goBack()">⬅ Back to Home</button>
   </div>
 
@@ -125,6 +132,30 @@
   const field = document.getElementById(id);
   field.type = field.type === "password" ? "text" : "password";
 }
+
+    function showForgot() {
+      const email = prompt("Enter your registered email");
+
+      if (!email) return;
+
+      fetch("https://deeksha1604.pythonanywhere.com/forgot_user_id", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("Your User ID is: " + data.user_id);
+        } else {
+          alert("Email not found");
+        }
+      })
+      .catch(() => {
+        alert("Server error. Try again later.");
+      });
+    }
+
 
   function login() {
     const userId = document.getElementById("userId").value.trim();
