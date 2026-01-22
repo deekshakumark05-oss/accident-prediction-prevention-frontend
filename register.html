@@ -136,10 +136,12 @@
     <div style="display:flex; gap:10px; align-items:center;">
       <input type="text" value="+91" disabled
             style="width:70px; text-align:center; background:#f0f0f0;">
-      <input type="tel" id="emergency"
+      <input type="text" id="emergency"
             placeholder="10-digit mobile number"
             maxlength="10"
+            oninput="this.value = this.value.replace(/[^0-9]/g, '')"
             required>
+
     </div>
 
 <p id="emergencyHelp" style="color:red; font-size:13px; display:none;">
