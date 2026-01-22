@@ -157,11 +157,27 @@
   <script>
     const BASE_URL = "https://deeksha1604.pythonanywhere.com";
 
+    function isStrongPassword(password) {
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    return regex.test(password);
+  }
     async function registerUser() {
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const emergency = document.getElementById("emergency").value.trim();
       const password = document.getElementById("password").value.trim();
+      if (!isStrongPassword(password)) {
+  alert(
+    "Password must be at least 8 characters long and include:\n" +
+    "- 1 uppercase letter\n" +
+    "- 1 lowercase letter\n" +
+    "- 1 number\n" +
+    "- 1 special character"
+  );
+  return;
+}
+
 
       if (!name || !email || !emergency || !password) {
         alert("Please fill all fields");
