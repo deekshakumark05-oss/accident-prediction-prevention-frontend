@@ -206,6 +206,7 @@ function finalResult(){
 
   fetch("https://deeksha1604.pythonanywhere.com/csv_result", {
     method: "POST",
+    mode: "cors",
     headers: {
       "Content-Type": "application/json"
     },
