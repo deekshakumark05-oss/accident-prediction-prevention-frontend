@@ -210,10 +210,11 @@
         return;
       }
 
-      if (!name || !email || !emergency || !password) {
+      if (!name || !email || !emergency || !password || !confirmPassword) {
         alert("Please fill all fields");
         return;
       }
+
 
       const response = await fetch(`${BASE_URL}/register`, {
         method: "POST",
