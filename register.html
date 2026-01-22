@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Registration</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #fde2e4, #fefae0, #e0fbfc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card {
+      background: #fff;
+      width: 500px;
+      padding: 50px;
+      border-radius: 25px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+    }
+
+    h2 {
+      text-align: center;
+      color: #1f3c88;
+      font-size: 32px;
+      margin-bottom: 30px;
+    }
+
+    label {
+      font-weight: 600;
+      margin-top: 15px;
+      display: block;
+      color: #333;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: 30px;
+      padding: 15px;
+      background: linear-gradient(135deg, #1f3c88, #3a86ff);
+      border: none;
+      border-radius: 15px;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100%;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: #fff;
+      padding: 40px;
+      width: 400px;
+      border-radius: 20px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+
+    .modal-box h3 {
+      color: #c1121f;
+      margin-bottom: 15px;
+    }
+
+    .user-id {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1f3c88;
+      margin: 15px 0;
+    }
+
+    .ok-btn {
+      margin-top: 20px;
+      padding: 12px 30px;
+      background: #1f3c88;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .ok-btn:hover {
+      background: #3a86ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+    <h2>User Registration</h2>
+
+    <label>Name</label>
+    <input type="text" id="name" placeholder="Enter your name" required>
+
+    <label>Email</label>
+    <input type="email" id="email" placeholder="Enter your email" required>
+
+    <label>Emergency Contact</label>
+    <input type="tel" id="emergency" placeholder="Enter emergency number" required>
+
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Create password" required>
+
+    <button class="btn" onclick="registerUser()">Register</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <h3>⚠ Important!</h3>
+      <p>Your User ID has been generated.</p>
+      <p>Please save it carefully. It cannot be recovered.</p>
+
+      <div class="user-id" id="userIdText"></div>
+
+      <button class="ok-btn" onclick="goHome()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    const BASE_URL = "http://deeksha1604.pythonanywhere.com";
+
+    async function registerUser() {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const emergency = document.getElementById("emergency").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (!name || !email || !emergency || !password) {
+        alert("Please fill all fields");
+        return;
+      }
+
+      const response = await fetch(`${BASE_URL}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name,
+          email: email,
+          emergency: emergency,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        document.getElementById("userIdText").innerText = data.user_id;
+        document.getElementById("modal").style.display = "flex";
+      } else {
+        alert("Registration failed");
+      }
+    }
+
+    function goHome() {
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>

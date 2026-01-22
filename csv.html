@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>CSV Streaming Accident Prediction</title>
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body{
+  margin:0;
+  font-family:'Poppins',sans-serif;
+  background:linear-gradient(135deg,#f5efe6,#e8dccf);
+  min-height:100vh;
+}
+
+.container{
+  max-width:1100px;
+  margin:40px auto;
+  background:#fff;
+  padding:40px;
+  border-radius:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,0.15);
+}
+
+h1{
+  text-align:center;
+  margin-bottom:40px;
+  color:#2c2c2c;
+}
+
+/* Center Buttons */
+.top-actions{
+  display:flex;
+  justify-content:center;
+  gap:50px;
+  margin-bottom:40px;
+}
+
+.action-btn{
+  background:linear-gradient(135deg,#1f3c88,#274b9f);
+  color:#fff;
+  border:none;
+  padding:18px 40px;
+  font-size:18px;
+  font-weight:600;
+  border-radius:16px;
+  cursor:pointer;
+  min-width:220px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  transition:all 0.3s ease;
+}
+
+.action-btn:hover{
+  transform:translateY(-4px);
+  box-shadow:0 15px 35px rgba(0,0,0,0.3);
+}
+
+.status{
+  margin-top:20px;
+  font-size:16px;
+  text-align:center;
+  color:#444;
+}
+
+/* Graph Section */
+.graph-box{
+  margin-top:40px;
+  padding:20px;
+  border-radius:16px;
+  background:#faf7f2;
+}
+
+/* Bottom Button */
+.bottom-btn{
+  position:fixed;
+  bottom:25px;
+  right:25px;
+  background:#6b4eff;
+  color:white;
+  border:none;
+  padding:12px 22px;
+  border-radius:30px;
+  cursor:pointer;
+  font-size:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+
+.bottom-btn:hover{
+  opacity:0.9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h1>CSV Streaming Accident Prediction</h1>
+
+  <div class="top-actions">
+    <button class="action-btn" onclick="document.getElementById('csvFile').click()">Upload CSV</button>
+    <button class="action-btn" onclick="startStreaming()">Start Streaming</button>
+    <input type="file" id="csvFile" accept=".csv" hidden>
+  </div>
+
+  <div class="status" id="status">No CSV uploaded</div>
+
+  <div class="graph-box">
+    <canvas id="streamChart"></canvas>
+  </div>
+</div>
+
+<button class="bottom-btn" onclick="goBack()">Back to Dashboard</button>
+
+<script>
+let csvData = [];
+let index = 0;
+let chart;
+
+document.getElementById("csvFile").addEventListener("change", function(e){
+  const reader = new FileReader();
+  reader.onload = function(){
+    const rows = reader.result.split("\n").slice(1);
+    csvData = rows.map(r => parseFloat(r.split(",")[0]) || 0);
+    document.getElementById("status").innerText = "CSV Loaded Successfully";
+  };
+  reader.readAsText(e.target.files[0]);
+});
+
+function initChart(){
+  const ctx = document.getElementById("streamChart").getContext("2d");
+  chart = new Chart(ctx,{
+    type:'line',
+    data:{
+      labels:[],
+      datasets:[{
+        label:'Driving Risk Flow',
+        data:[],
+        borderColor:'#1f3c88',
+        backgroundColor:'rgba(31,60,136,0.2)',
+        tension:0.4
+      }]
+    },
+    options:{
+      responsive:true,
+      animation:false,
+      scales:{
+        y:{beginAtZero:true,max:120}
+      }
+    }
+  });
+}
+
+initChart();
+
+function startStreaming(){
+  if(csvData.length === 0){
+    alert("Please upload a CSV file first");
+    return;
+  }
+
+  document.getElementById("status").innerText = "Streaming started...";
+  index = 0;
+
+  const interval = setInterval(()=>{
+    if(index >= csvData.length){
+      clearInterval(interval);
+      finalResult();
+      return;
+    }
+
+    const value = csvData[index];
+    chart.data.labels.push(index+1);
+    chart.data.datasets[0].data.push(value);
+    chart.update();
+
+    // High risk alert
+    if(value > 80){
+      alert("⚠️ High Risk Driving Detected!\nAlert sent to user.");
+    }
+
+    // Accident detection simulation
+    if(value > 110){
+      alert("🚨 Accident Detected!\nEmergency alert sent to family.");
+      clearInterval(interval);
+    }
+
+    index++;
+  },700);
+}
+
+function finalResult(){
+  const userId = localStorage.getItem("loggedInUser");
+
+  if (!userId) {
+    alert("Session expired. Please login again.");
+    window.location.href = "login.html";
+    return;
+  }
+
+  const avg = csvData.reduce((a,b)=>a+b,0) / csvData.length;
+
+  fetch("http://deeksha1604.pythonanywhere.com/csv_result", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      user_id: userId,
+      avg: avg
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.risk === "Low") {
+      alert("✅ Safe Drive Completed\nReward: 10 Points");
+    } 
+    else if (data.risk === "Medium") {
+      alert("⚠️ Moderate Drive\nReward: 5 Points");
+    } 
+    else {
+      alert("❌ Risky Drive\nNo Reward\nAlert sent to user");
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Error saving CSV result");
+  });
+}
+
+
+function goBack(){
+  window.location.href="dashboard.html";
+}
+</script>
+
+</body>
+</html>

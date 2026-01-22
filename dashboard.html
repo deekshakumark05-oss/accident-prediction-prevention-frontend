@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:'Poppins', sans-serif;
+    }
+
+    body{
+      height:100vh;
+      background:linear-gradient(135deg,#fcefee,#fefae0,#e6f7f7);
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      position:relative;
+    }
+
+    /* Wallet */
+    .wallet{
+      position:absolute;
+      top:25px;
+      left:25px;
+      background:white;
+      padding:15px 25px;
+      border-radius:20px;
+      box-shadow:0 10px 25px rgba(0,0,0,0.15);
+      font-weight:600;
+      color:#1f3c88;
+    }
+
+    /* History button */
+    .history{
+      position:absolute;
+      top:25px;
+      right:25px;
+      padding:12px 22px;
+      background:#1f3c88;
+      color:white;
+      border:none;
+      border-radius:20px;
+      font-weight:600;
+      cursor:pointer;
+      transition:0.3s;
+    }
+
+    .history:hover{
+      transform:scale(1.05);
+    }
+
+    /* Logout */
+    .logout{
+      position:absolute;
+      bottom:25px;
+      right:25px;
+      background:none;
+      border:none;
+      color:#1f3c88;
+      font-weight:600;
+      cursor:pointer;
+      font-size:16px;
+    }
+
+    .logout:hover{
+      text-decoration:underline;
+    }
+
+    /* Center buttons */
+    .dashboard-box{
+      display:flex;
+      gap:40px;
+    }
+
+    .dash-btn{
+      width:260px;
+      height:180px;
+      background:linear-gradient(135deg,#1f3c88,#3a86ff);
+      color:white;
+      border:none;
+      border-radius:30px;
+      font-size:22px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow:0 20px 40px rgba(0,0,0,0.2);
+      transition:0.3s;
+    }
+
+    .dash-btn:hover{
+      transform:scale(1.08);
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Wallet -->
+  <div id="walletBox" style="
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #ffffff;
+  padding: 14px 22px;
+  border-radius: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  font-weight: 600;
+  color: #1f3c88;
+  font-size: 16px;
+">
+  💰 Wallet: <span id="walletAmount">0</span> pts
+</div>
+
+
+  <!-- History -->
+  <button class="history" onclick="openHistory()">History</button>
+
+  <!-- Center buttons -->
+  <div class="dashboard-box">
+    <button class="dash-btn" onclick="openManual()">Manual Prediction</button>
+    <button class="dash-btn" onclick="openCSV()">CSV Bulking</button>
+  </div>
+
+  <!-- Logout -->
+  <button class="logout" onclick="logout()">Logout</button>
+
+  <script>
+    function openManual(){
+      window.location.href="manual.html";
+    }
+
+    function openCSV(){
+      window.location.href="csv.html";
+    }
+
+    function openHistory(){
+      window.location.href="history.html";
+    }
+
+    function logout(){
+      localStorage.removeItem("loggedInUser");
+  window.location.href="index.html";
+    }
+    const userId = localStorage.getItem("loggedInUser");
+
+  if (!userId) {
+    alert("Session expired. Please login again.");
+    window.location.href = "login.html";
+  }
+
+  fetch(`http://deeksha1604.pythonanywhere.com/wallet/${userId}`)
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("walletAmount").innerText = data.wallet;
+    })
+    .catch(err => {
+      console.error(err);
+      alert("Unable to load wallet");
+    });
+  </script>
+
+</body>
+</html>

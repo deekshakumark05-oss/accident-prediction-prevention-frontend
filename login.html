@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Login</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      background: linear-gradient(135deg, #fde2e4, #fefae0, #e0fbfc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-card {
+      background: #ffffff;
+      width: 480px;
+      padding: 50px;
+      border-radius: 25px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 32px;
+      color: #1f3c88;
+      margin-bottom: 30px;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      font-weight: 600;
+      color: #333;
+      margin-top: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-top: 8px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      font-size: 15px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      margin-top: 30px;
+      background: linear-gradient(135deg, #1f3c88, #3a86ff);
+      border: none;
+      border-radius: 15px;
+      color: white;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .btn:hover {
+      transform: scale(1.05);
+    }
+
+    .back-btn {
+      margin-top: 20px;
+      background: none;
+      border: none;
+      color: #1f3c88;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .back-btn:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-card">
+    <h2>User Login</h2>
+
+    <label>User ID</label>
+    <input type="text" id="userId" placeholder="Enter your User ID" required>
+
+    <label>Password</label>
+    <input type="password" placeholder="Enter your password" required>
+
+    <button class="btn" onclick="login()">Login</button>
+
+    <button class="back-btn" onclick="goBack()">⬅ Back to Home</button>
+  </div>
+
+  <script>
+  function login() {
+    const userId = document.getElementById("userId").value.trim();
+    const password = document.querySelector('input[type="password"]').value;
+
+    if (userId === "" || password === "") {
+      alert("Please enter User ID and Password");
+      return;
+    }
+
+    fetch("http://deeksha1604.pythonanywhere.com/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        user_id: userId,
+        password: password
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        localStorage.setItem("loggedInUser", userId);
+        window.location.href = "dashboard.html";
+      } else {
+        alert("Invalid User ID or Password");
+      }
+    })
+    .catch(err => {
+      alert("Server error. Please try again.");
+      console.error(err);
+    });
+  }
+
+  function goBack() {
+    window.location.href = "index.html";
+  }
+</script>
+
+
+</body>
+</html>
