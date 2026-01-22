@@ -145,7 +145,10 @@
     window.location.href = "login.html";
   }
 
-  fetch(`https://deeksha1604.pythonanywhere.com/history/${userId}`)
+  fetch(`https://deeksha1604.pythonanywhere.com/history/${userId}`, {
+    method: "GET",
+    mode: "cors"
+  })
     .then(res => res.json())
     .then(data => {
       const tbody = document.getElementById("historyBody");
@@ -179,6 +182,7 @@
       console.error(err);
       alert("Failed to load history");
     });
+
 
   function goBack() {
     window.location.href = "dashboard.html";
