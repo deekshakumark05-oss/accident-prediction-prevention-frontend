@@ -177,6 +177,8 @@
   <script>
 function predict() {
   const speed = Number(document.getElementById("speed").value);
+  const accel = Number(document.getElementById("accel").value);
+  const brake = Number(document.getElementById("brake").value);
   const userId = localStorage.getItem("loggedInUser");
 
   if (!userId) {
@@ -196,7 +198,9 @@ function predict() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       user_id: userId,
-      speed: speed
+      speed: speed,
+      acceleration: accel,
+      brake: brake
     })
   })
   .then(res => res.json())
