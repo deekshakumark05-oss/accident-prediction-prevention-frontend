@@ -100,6 +100,27 @@
 
 <body>
 
+  <!-- Profile Icon -->
+  <div onclick="openProfile()" style="
+    position: fixed;
+    top: 20px;
+    right: 25px;
+    width: 55px;
+    height: 55px;
+    background: #1f3c88;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 26px;
+    cursor: pointer;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  ">
+    👤
+  </div>
+
+
   <!-- Wallet -->
   <div id="walletBox" style="
   position: fixed;
@@ -118,7 +139,7 @@
 
 
   <!-- History -->
-  <button class="history" onclick="openHistory()">History</button>
+  <button class="history" style="top:90px;" onclick="openHistory()">History</button>
 
   <!-- Center buttons -->
   <div class="dashboard-box">
@@ -140,6 +161,10 @@
 
     function openHistory(){
       window.location.href="history.html";
+    }
+
+    function openProfile(){
+      window.location.href = "profile.html";
     }
 
     function logout(){
